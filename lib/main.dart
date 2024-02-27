@@ -16,7 +16,9 @@ class MyApp extends StatelessWidget {
       darkTheme: MyTheme.darkMode,
       themeMode: ThemeMode.system,
       initialRoute: HomeTabsScreen.routeName,
-      routes: {HomeTabsScreen.routeName: (context) => const HomeTabsScreen()},
+      routes: {
+        HomeTabsScreen.routeName: (context) => const HomeTabsScreen(),
+      },
     );
   }
 }
