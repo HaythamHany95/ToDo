@@ -2,9 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/add_button.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/task_textformfied.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
+import 'package:intl/intl.dart';
 
-class NewTaskBottomSheet extends StatelessWidget {
+class NewTaskBottomSheet extends StatefulWidget {
   const NewTaskBottomSheet({super.key});
+
+  @override
+  State<NewTaskBottomSheet> createState() => _NewTaskBottomSheetState();
+}
+
+class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
+  /// [ MARK ] Variables: -
+  final _formKey = GlobalKey<FormState>();
+  String? _selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+  /// [ MARK ] Utilities: -
+  void showCalender() async {
+    var calenderDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (calenderDate != null) {
+      _selectedDate = DateFormat('yyyy-MM-dd').format(calenderDate);
+    }
+    setState(() {});
+  }
+
+  /// [ MARK ] Stf Life Cycle: -
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +42,7 @@ class NewTaskBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.only(top: 20, right: 40, left: 40),
       width: double.infinity,
       child: Form(
+        key: _formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -24,8 +51,14 @@ class NewTaskBottomSheet extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            const TaskTextFormField(
-              hintText: "enter Your Task ",
+            TaskTextFormField(
+              validator: (text) {
+                if (text == null || text.isEmpty) {
+                  return "You should enter your Task ";
+                }
+                return null;
+              },
+              hintText: "enter Your Task",
             ),
             const TaskTextFormField(
               hintText: "enter Task Description",
@@ -40,8 +73,11 @@ class NewTaskBottomSheet extends StatelessWidget {
               ),
             ),
             InkWell(
+              onTap: () {
+                showCalender();
+              },
               child: Text(
-                "11/12/2024",
+                "$_selectedDate",
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium
@@ -50,7 +86,9 @@ class NewTaskBottomSheet extends StatelessWidget {
             ),
             CircleElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                if (_formKey.currentState!.validate()) {
+                  Navigator.pop(context);
+                }
               },
             )
           ],

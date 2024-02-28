@@ -10,7 +10,7 @@ class TasksTab extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 12),
         child: Expanded(
             child: ListView.builder(
-          itemCount: 5,
+          itemCount: 3,
           itemBuilder: (context, i) => TaskItemListTile(
             title: "Shopping",
             description: "Buy cheese from Ma'amon",
