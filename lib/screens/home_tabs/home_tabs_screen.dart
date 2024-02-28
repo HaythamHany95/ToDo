@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/screens/home_tabs/settings/settings_tab.dart';
 import 'package:to_do_app/screens/home_tabs/tasks/tasks_tab.dart';
+import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/newtask_bottomsheet.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/notched_navbar.dart';
 
 class HomeTabsScreen extends StatefulWidget {
@@ -15,6 +16,12 @@ class HomeTabsScreen extends StatefulWidget {
 class _HomeTabsScreenState extends State<HomeTabsScreen> {
   /// [ MARK ] Variables: -
   int _selectedTabIndex = 0;
+
+  /// [ MARK ] Utilities: -
+  void popUpTaskBottomSheet() {
+    showModalBottomSheet(
+        context: context, builder: (context) => NewTaskBottomSheet());
+  }
 
   /// [ MARK ] Stf LifeCycle: -
   @override
@@ -41,7 +48,9 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          popUpTaskBottomSheet();
+        },
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
