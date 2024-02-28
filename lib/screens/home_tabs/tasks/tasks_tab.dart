@@ -11,7 +11,7 @@ class TasksTab extends StatelessWidget {
         child: Expanded(
             child: ListView.builder(
           itemCount: 3,
-          itemBuilder: (context, i) => TaskItemListTile(
+          itemBuilder: (context, i) => const TaskItemListTile(
             title: "Shopping",
             description: "Buy cheese from Ma'amon",
           ),
