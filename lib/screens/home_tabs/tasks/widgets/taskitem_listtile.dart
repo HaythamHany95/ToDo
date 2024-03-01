@@ -25,14 +25,18 @@ class TaskItemListTile extends StatelessWidget {
         startActionPane: ActionPane(
           extentRatio: 100 / MediaQuery.sizeOf(context).width,
           motion: const BehindMotion(),
-          dismissible: DismissiblePane(onDismissed: () {}),
+          dismissible: DismissiblePane(onDismissed: () {
+            //TODO: delete from database
+          }),
           children: [
             SlidableAction(
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(12),
                 topLeft: Radius.circular(12),
               ),
-              onPressed: (context) {},
+              onPressed: (context) {
+                //TODO: delete from database
+              },
               backgroundColor: MyTheme.redColor,
               foregroundColor: Colors.white,
               icon: Icons.delete,

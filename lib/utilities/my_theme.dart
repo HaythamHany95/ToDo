@@ -24,6 +24,8 @@ class MyTheme {
 
     ///* AppBarTheme
     appBarTheme: AppBarTheme(
+      elevation: 0,
+      scrolledUnderElevation: 0,
       foregroundColor: whiteColor,
       backgroundColor: primaryColor,
     ),
