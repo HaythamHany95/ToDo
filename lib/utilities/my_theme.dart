@@ -21,9 +21,13 @@ class MyTheme {
   static ThemeData lightMode = ThemeData(
     scaffoldBackgroundColor: lightBackgroundColor,
     primaryColor: primaryColor,
+    useMaterial3:
+        false, // Solved the issue of clicking on the the whole `NavBar`
 
     ///* AppBarTheme
     appBarTheme: AppBarTheme(
+      elevation: 0,
+      scrolledUnderElevation: 0,
       foregroundColor: whiteColor,
       backgroundColor: primaryColor,
     ),
