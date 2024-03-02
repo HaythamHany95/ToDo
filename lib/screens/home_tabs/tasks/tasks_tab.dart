@@ -55,7 +55,7 @@ class _TasksTabState extends State<TasksTab> {
 
         /// Start of the original structre --------
         Container(
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.612,
             margin: const EdgeInsets.symmetric(horizontal: 12),
             child: Expanded(
                 child: ListView.builder(
