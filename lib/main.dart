@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/screens/home_tabs/home_tabs_screen.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
@@ -6,6 +7,8 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseFirestore.instance.disableNetwork();
+
   runApp(const MyApp());
 }
 

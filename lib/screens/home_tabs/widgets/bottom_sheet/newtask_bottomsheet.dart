@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_app/firebase/firebase_manager.dart';
+import 'package:to_do_app/models/task.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/add_button.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/task_textformfied.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
@@ -15,9 +17,11 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
   /// [ MARK ] Variables: -
   final _formKey = GlobalKey<FormState>();
   String? _selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String? _taskTitle;
+  String? _taskDesc;
 
   /// [ MARK ] Utilities: -
-  void showCalender() async {
+  void _showCalender() async {
     var calenderDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -30,15 +34,36 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
     setState(() {});
   }
 
+  void _addTask() {
+    Task newTask =
+        Task(title: _taskTitle, desc: _taskDesc, date: _selectedDate);
+    FirebaseManager.addTaskToFirestore(newTask)
+        .timeout(const Duration(milliseconds: 500), onTimeout: () {});
+  }
+
+  // SnackBar _showSnackBar() {
+  //   return  SnackBar(
+  //     content: const Text('Your Task Added Succssefully'),
+  //     action: SnackBarAction(
+  //       label: 'dismiss',
+  //       onPressed: () {
+  //       },
+  //     ),
+  //   );
+  // }
+
   /// [ MARK ] Stf Life Cycle: -
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
       padding: const EdgeInsets.only(top: 20, right: 40, left: 40),
       width: double.infinity,
       child: Form(
@@ -52,6 +77,10 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             TaskTextFormField(
+              onChanged: (newText) {
+                _taskTitle = newText;
+                setState(() {});
+              },
               validator: (text) {
                 if (text == null || text.isEmpty) {
                   return "You should enter your Task ";
@@ -60,7 +89,11 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
               },
               hintText: "enter Your Task",
             ),
-            const TaskTextFormField(
+            TaskTextFormField(
+              onChanged: (newText) {
+                _taskDesc = newText;
+                setState(() {});
+              },
               hintText: "enter Task Description",
               maxLines: 4,
             ),
@@ -74,7 +107,7 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
             ),
             InkWell(
               onTap: () {
-                showCalender();
+                _showCalender();
               },
               child: Text(
                 "$_selectedDate",
@@ -87,6 +120,9 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
             CircleElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
+                  _addTask();
+                  // final snackBar = _showSnackBar();
+                  // ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   Navigator.pop(context);
                 }
               },
