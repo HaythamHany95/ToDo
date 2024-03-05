@@ -1,9 +1,13 @@
+// Collection -> Document -> date [set || read || delete || update task]
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:to_do_app/models/task.dart';
 
 class FirebaseManager {
+  /// To access the [Collection]
   static CollectionReference<Task> getTasksCollection() {
-    return FirebaseFirestore.instance.collection('Tasks').withConverter<Task>(
+    return FirebaseFirestore.instance
+        .collection(Task.collectionName)
+        .withConverter<Task>(
       /// from [json] to [object]
       fromFirestore: (snapshot, _) {
         return Task.fromJson(snapshot.data()!);
@@ -17,8 +21,8 @@ class FirebaseManager {
   }
 
   static Future<void> addTaskToFirestore(Task task) {
-    CollectionReference tasksCollection = getTasksCollection();
-    DocumentReference taskDocument = tasksCollection.doc();
+    CollectionReference<Task> tasksCollection = getTasksCollection();
+    DocumentReference<Task> taskDocument = tasksCollection.doc();
 
     /// to set the auto generate's [taskDocument.id] to task id, so `user` doesn't set it by himself
     task.id = taskDocument.id;

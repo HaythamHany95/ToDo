@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/task.dart';
+import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/add_button.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/task_textformfied.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
@@ -19,6 +21,7 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
   String? _selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
   String? _taskTitle;
   String? _taskDesc;
+  late TasksProvider _tasksProvider;
 
   /// [ MARK ] Utilities: -
   void _showCalender() async {
@@ -38,24 +41,15 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
     Task newTask =
         Task(title: _taskTitle, desc: _taskDesc, date: _selectedDate);
     FirebaseManager.addTaskToFirestore(newTask)
-        .timeout(const Duration(milliseconds: 500), onTimeout: () {});
+        .timeout(const Duration(milliseconds: 500), onTimeout: () {
+      _tasksProvider.getAllTasks();
+    });
   }
 
-  // SnackBar _showSnackBar() {
-  //   return  SnackBar(
-  //     content: const Text('Your Task Added Succssefully'),
-  //     action: SnackBarAction(
-  //       label: 'dismiss',
-  //       onPressed: () {
-  //       },
-  //     ),
-  //   );
-  // }
-
   /// [ MARK ] Stf Life Cycle: -
-
   @override
   Widget build(BuildContext context) {
+    _tasksProvider = Provider.of<TasksProvider>(context);
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -121,8 +115,6 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _addTask();
-                  // final snackBar = _showSnackBar();
-                  // ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   Navigator.pop(context);
                 }
               },
