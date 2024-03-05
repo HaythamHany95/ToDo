@@ -1,4 +1,6 @@
 class Task {
+  static const String collectionName = 'Tasks';
+
   String? id;
   String? title;
   String? desc;
@@ -10,11 +12,11 @@ class Task {
   /// From Firestore
   Task.fromJson(Map<String, Object?> json)
       : this(
-            id: json['id'] as String,
-            title: json['title'] as String,
-            desc: json['desc'] as String,
-            date: json['date'] as String,
-            isDone: json['isDone'] as bool);
+            id: json['id'] as String?,
+            title: json['title'] as String?,
+            desc: json['desc'] as String?,
+            date: json['date'] as String?,
+            isDone: json['isDone'] as bool?);
 
   /// To Firestore
   Map<String, Object?> toJson() {

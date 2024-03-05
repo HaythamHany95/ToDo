@@ -3,7 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class TaskItemListTile extends StatelessWidget {
-  final String title;
+  final String? title;
   final String? description;
   const TaskItemListTile({required this.title, this.description, super.key});
 
@@ -57,7 +57,7 @@ class TaskItemListTile extends StatelessWidget {
                 color: MyTheme.primaryColor,
               ),
               title: Text(
-                title,
+                title ?? "",
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium
