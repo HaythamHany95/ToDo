@@ -6,7 +6,6 @@ import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/add_button.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/task_textformfied.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
-import 'package:intl/intl.dart';
 
 class NewTaskBottomSheet extends StatefulWidget {
   const NewTaskBottomSheet({super.key});
@@ -18,7 +17,7 @@ class NewTaskBottomSheet extends StatefulWidget {
 class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
   /// [ MARK ] Variables: -
   final _formKey = GlobalKey<FormState>();
-  String? _selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  DateTime? _selectedDate = DateTime.now();
   String? _taskTitle;
   String? _taskDesc;
   late TasksProvider _tasksProvider;
@@ -32,7 +31,7 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
     if (calenderDate != null) {
-      _selectedDate = DateFormat('yyyy-MM-dd').format(calenderDate);
+      _selectedDate = calenderDate;
     }
     setState(() {});
   }
@@ -104,7 +103,7 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
                 _showCalender();
               },
               child: Text(
-                "$_selectedDate",
+                "${_selectedDate?.year}-${_selectedDate?.month}-${_selectedDate?.day}",
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium

@@ -1,30 +1,35 @@
 class Task {
-  static const String collectionName = 'Tasks';
+  static const String collectionName = 'tasks_collection';
 
   String? id;
   String? title;
   String? desc;
-  String? date;
+  DateTime? date;
   bool? isDone;
 
-  Task({this.id = "", this.title, this.desc, this.date, this.isDone = false});
+  Task(
+      {this.id = "",
+      required this.title,
+      this.desc,
+      required this.date,
+      this.isDone = false});
 
   /// From Firestore
-  Task.fromJson(Map<String, Object?> json)
+  Task.fromJson(Map<String, dynamic> json)
       : this(
             id: json['id'] as String?,
             title: json['title'] as String?,
             desc: json['desc'] as String?,
-            date: json['date'] as String?,
+            date: DateTime.fromMillisecondsSinceEpoch(json['date']),
             isDone: json['isDone'] as bool?);
 
   /// To Firestore
-  Map<String, Object?> toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'title': title,
       'desc': desc,
-      'date': date,
+      'date': date?.millisecondsSinceEpoch,
       'isDone': isDone
     };
   }

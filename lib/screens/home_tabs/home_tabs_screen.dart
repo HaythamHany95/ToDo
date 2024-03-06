@@ -20,7 +20,17 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
   /// [ MARK ] Utilities: -
   void popUpTaskBottomSheet() {
     showModalBottomSheet(
-        context: context, builder: (context) => const NewTaskBottomSheet());
+        // isScrollControlled: true,
+        context: context,
+        builder: (context) =>
+
+            /// TODO: padding the bottomSheet
+            const NewTaskBottomSheet());
+    //  Padding(
+    //       padding: EdgeInsets.only(
+    //           bottom: MediaQuery.of(context).viewInsets.bottom),
+    //       child: const NewTaskBottomSheet(),
+    //     )
   }
 
   /// [ MARK ] Stf LifeCycle: -

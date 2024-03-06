@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/firebase/firebase_manager.dart';
+import 'package:to_do_app/models/task.dart';
+import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class TaskItemListTile extends StatelessWidget {
-  final String? title;
-  final String? description;
-  const TaskItemListTile({required this.title, this.description, super.key});
+  final Task task;
+  const TaskItemListTile({required this.task, super.key});
 
   @override
   Widget build(BuildContext context) {
+    var tasksProvider = Provider.of<TasksProvider>(context);
     return Container(
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(
@@ -25,9 +29,9 @@ class TaskItemListTile extends StatelessWidget {
         startActionPane: ActionPane(
           extentRatio: 100 / MediaQuery.sizeOf(context).width,
           motion: const BehindMotion(),
-          dismissible: DismissiblePane(onDismissed: () {
-            //TODO: delete from database
-          }),
+          // dismissible: DismissiblePane(onDismissed: () {
+          ///! Throw Error
+          // }),
           children: [
             SlidableAction(
               borderRadius: const BorderRadius.only(
@@ -35,7 +39,10 @@ class TaskItemListTile extends StatelessWidget {
                 topLeft: Radius.circular(12),
               ),
               onPressed: (context) {
-                //TODO: delete from database
+                FirebaseManager.deleteFromFirestore(task)
+                    .timeout(const Duration(milliseconds: 500), onTimeout: () {
+                  tasksProvider.getAllTasks();
+                });
               },
               backgroundColor: MyTheme.redColor,
               foregroundColor: Colors.white,
@@ -57,7 +64,7 @@ class TaskItemListTile extends StatelessWidget {
                 color: MyTheme.primaryColor,
               ),
               title: Text(
-                title ?? "",
+                task.title ?? "",
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium
@@ -65,7 +72,7 @@ class TaskItemListTile extends StatelessWidget {
               ),
               subtitle: Container(
                   margin: const EdgeInsets.only(top: 5),
-                  child: Text(description ?? "")),
+                  child: Text(task.desc ?? "")),
               trailing: Container(
                 margin: const EdgeInsets.only(right: 5),
                 padding:
