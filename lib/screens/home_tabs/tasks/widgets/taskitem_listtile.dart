@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/task.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
+import 'package:to_do_app/screens/add_task/add_task_screen.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class TaskItemListTile extends StatelessWidget {
@@ -63,12 +64,20 @@ class TaskItemListTile extends StatelessWidget {
                 width: 4,
                 color: MyTheme.primaryColor,
               ),
-              title: Text(
-                task.title ?? "",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(color: MyTheme.primaryColor),
+              title: InkWell(
+                overlayColor:
+                    // To remove the `clicking mark ==` after pop
+                    const MaterialStatePropertyAll(Colors.transparent),
+                onTap: () {
+                  Navigator.of(context).pushNamed(EditTaskScreen.routeName);
+                },
+                child: Text(
+                  task.title ?? "",
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: MyTheme.primaryColor),
+                ),
               ),
               subtitle: Container(
                   margin: const EdgeInsets.only(top: 5),

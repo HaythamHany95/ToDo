@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
+import 'package:to_do_app/screens/add_task/add_task_screen.dart';
 import 'package:to_do_app/screens/home_tabs/home_tabs_screen.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
       initialRoute: HomeTabsScreen.routeName,
       routes: {
         HomeTabsScreen.routeName: (context) => const HomeTabsScreen(),
+        EditTaskScreen.routeName: (context) => const EditTaskScreen()
       },
     );
   }
