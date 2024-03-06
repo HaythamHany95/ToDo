@@ -22,7 +22,7 @@ class MyTheme {
     scaffoldBackgroundColor: lightBackgroundColor,
     primaryColor: primaryColor,
     useMaterial3:
-        false, // Solved the issue of clicking on the the whole `NavBar`
+        true, // Solved the issue of clicking on the the whole `NavBar`
 
     ///* AppBarTheme
     appBarTheme: AppBarTheme(

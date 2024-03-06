@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class Calender extends StatelessWidget {
-  final EasyInfiniteDateTimelineController? controller;
   final DateTime firstDate;
   final DateTime? focusDate;
   final DateTime lastDate;
   final void Function(DateTime)? onDateChange;
   const Calender(
-      {required this.controller,
-      required this.firstDate,
+      {required this.firstDate,
       required this.focusDate,
       required this.lastDate,
       required this.onDateChange,
@@ -50,10 +48,9 @@ class Calender extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10)),
           ),
         ),
-        controller: controller,
-        firstDate: DateTime.now(),
+        firstDate: firstDate,
         focusDate: focusDate,
-        lastDate: DateTime.now().add(const Duration(days: 365)),
+        lastDate: lastDate,
         onDateChange: onDateChange,
       ),
     );

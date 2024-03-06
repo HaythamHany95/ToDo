@@ -1,5 +1,5 @@
-import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/home_tabs/tasks/widgets/calender.dart';
@@ -16,8 +16,6 @@ class _TasksTabState extends State<TasksTab> {
   /// [ MARK ] variables
   late TasksProvider _tasksProvider;
 
-  final _calenderController = EasyInfiniteDateTimelineController();
-
   /// [ MARK ] STF Life Cycle
   @override
   Widget build(BuildContext context) {
@@ -28,26 +26,24 @@ class _TasksTabState extends State<TasksTab> {
     return Column(
       children: [
         Calender(
-          controller: _calenderController,
-          firstDate: DateTime.now(),
           focusDate: _tasksProvider.selectedDate,
+          firstDate: DateTime.now().subtract(const Duration(days: 30)),
           lastDate: DateTime.now().add(const Duration(days: 365)),
           onDateChange: (selectedDate) {
             _tasksProvider.changeDateOnCalender(selectedDate);
-            print(selectedDate);
           },
         ),
-        Container(
-            height: MediaQuery.of(context).size.height * 0.612,
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-            child: Expanded(
-                child: ListView.builder(
-              itemCount: _tasksProvider.tasks.length,
-              itemBuilder: (context, i) => TaskItemListTile(
-                title: _tasksProvider.tasks[i].title ?? "",
-                description: _tasksProvider.tasks[i].desc,
-              ),
-            ))),
+        Expanded(
+          child: Container(
+              height: MediaQuery.of(context).size.height * 0.612,
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              child: ListView.builder(
+                itemCount: _tasksProvider.tasks.length,
+                itemBuilder: (context, i) => TaskItemListTile(
+                  task: _tasksProvider.tasks[i],
+                ),
+              )),
+        ),
       ],
     );
   }

@@ -29,4 +29,8 @@ class FirebaseManager {
 
     return taskDocument.set(task);
   }
+
+  static Future<void> deleteFromFirestore(Task task) {
+    return getTasksCollection().doc(task.id).delete();
+  }
 }
