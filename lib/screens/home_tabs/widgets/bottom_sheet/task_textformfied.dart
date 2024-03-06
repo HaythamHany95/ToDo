@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class TaskTextFormField extends StatelessWidget {
+  final String? initialValue;
   final TextEditingController? controller;
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
@@ -9,7 +10,8 @@ class TaskTextFormField extends StatelessWidget {
   final int? maxLines;
 
   const TaskTextFormField(
-      {this.controller,
+      {this.initialValue,
+      this.controller,
       this.onChanged,
       this.validator,
       this.hintText,
@@ -19,6 +21,8 @@ class TaskTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: Theme.of(context).textTheme.titleMedium,
+      initialValue: initialValue,
       controller: controller,
       onChanged: onChanged,
       validator: validator,

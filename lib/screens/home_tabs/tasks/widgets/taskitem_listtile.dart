@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/task.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
-import 'package:to_do_app/screens/add_task/add_task_screen.dart';
+import 'package:to_do_app/screens/edit_task/edit_task_screen.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class TaskItemListTile extends StatelessWidget {
@@ -69,7 +69,8 @@ class TaskItemListTile extends StatelessWidget {
                     // To remove the `clicking mark ==` after pop
                     const MaterialStatePropertyAll(Colors.transparent),
                 onTap: () {
-                  Navigator.of(context).pushNamed(EditTaskScreen.routeName);
+                  Navigator.of(context)
+                      .pushNamed(EditTaskScreen.routeName, arguments: task);
                 },
                 child: Text(
                   task.title ?? "",

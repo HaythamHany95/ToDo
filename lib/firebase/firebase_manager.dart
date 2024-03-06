@@ -33,4 +33,10 @@ class FirebaseManager {
   static Future<void> deleteFromFirestore(Task task) {
     return getTasksCollection().doc(task.id).delete();
   }
+
+  static Future<void> updateTaskFromFirestore(Task task) {
+    return getTasksCollection()
+        .doc(task.id)
+        .update({'title': task.title, 'desc': task.desc});
+  }
 }
