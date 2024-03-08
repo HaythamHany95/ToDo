@@ -5,15 +5,22 @@ import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/task.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/edit_task/edit_task_screen.dart';
+import 'package:to_do_app/screens/home_tabs/tasks/widgets/task_check.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
-class TaskItemListTile extends StatelessWidget {
+class TaskItemListTile extends StatefulWidget {
   final Task task;
   const TaskItemListTile({required this.task, super.key});
 
   @override
+  State<TaskItemListTile> createState() => _TaskItemListTileState();
+}
+
+class _TaskItemListTileState extends State<TaskItemListTile> {
+  @override
   Widget build(BuildContext context) {
     var tasksProvider = Provider.of<TasksProvider>(context);
+
     return Container(
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(
@@ -40,7 +47,7 @@ class TaskItemListTile extends StatelessWidget {
                 topLeft: Radius.circular(12),
               ),
               onPressed: (context) {
-                FirebaseManager.deleteFromFirestore(task)
+                FirebaseManager.deleteFromFirestore(widget.task)
                     .timeout(const Duration(milliseconds: 500), onTimeout: () {
                   tasksProvider.getAllTasks();
                 });
@@ -62,44 +69,48 @@ class TaskItemListTile extends StatelessWidget {
               leading: Container(
                 margin: const EdgeInsets.only(left: 5),
                 width: 4,
-                color: MyTheme.primaryColor,
+                color: (widget.task.isDone!)
+                    ? MyTheme.greenColor
+                    : MyTheme.primaryColor,
               ),
               title: InkWell(
                 overlayColor:
                     // To remove the `clicking mark ==` after pop
                     const MaterialStatePropertyAll(Colors.transparent),
                 onTap: () {
-                  Navigator.of(context)
-                      .pushNamed(EditTaskScreen.routeName, arguments: task);
+                  Navigator.of(context).pushNamed(EditTaskScreen.routeName,
+                      arguments: widget.task);
                 },
                 child: Text(
-                  task.title ?? "",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(color: MyTheme.primaryColor),
+                  widget.task.title ?? "",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: (widget.task.isDone!)
+                          ? MyTheme.greenColor
+                          : MyTheme.primaryColor),
                 ),
               ),
               subtitle: Container(
                   margin: const EdgeInsets.only(top: 5),
-                  child: Text(task.desc ?? "")),
-              trailing: Container(
-                margin: const EdgeInsets.only(right: 5),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                decoration: BoxDecoration(
-                    color: MyTheme.primaryColor,
-                    borderRadius: BorderRadius.circular(12)),
-                child: InkWell(
-                  onTap: () {
-                    /// TODO: make title's color green and the Widget into Text ("Done!")
-                    // print("button pressed");
-                  },
-                  child: ImageIcon(
-                    const AssetImage("assets/images/icon_check.png"),
-                    color: MyTheme.whiteColor,
-                  ),
-                ),
+                  child: Text(widget.task.desc ?? "")),
+              trailing: InkWell(
+                overlayColor:
+                    const MaterialStatePropertyAll(Colors.transparent),
+                onTap: () {
+                  setState(() {
+                    widget.task.isDone = !widget.task.isDone!;
+                    FirebaseManager.doneTask(widget.task)
+                        .timeout(Durations.medium4, onTimeout: () {});
+                  });
+                },
+                child: (widget.task.isDone!)
+                    ? Text(
+                        "Done !",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(color: MyTheme.greenColor),
+                      )
+                    : const TaskCheck(),
               ),
             ),
           ),

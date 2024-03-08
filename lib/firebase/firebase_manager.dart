@@ -39,4 +39,8 @@ class FirebaseManager {
         .doc(task.id)
         .update({'title': task.title, 'desc': task.desc});
   }
+
+  static Future<void> doneTask(Task task) {
+    return getTasksCollection().doc(task.id).update({'isDone': task.isDone});
+  }
 }
