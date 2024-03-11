@@ -1,7 +1,11 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/screens/auth/widgets/auth_button.dart';
 import 'package:to_do_app/screens/auth/widgets/auth_textform_field.dart';
 import 'package:to_do_app/screens/home_tabs/home_tabs_screen.dart';
+import 'package:to_do_app/utilities/dialog_util.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 import 'package:to_do_app/utilities/myvalidation.dart';
 
@@ -15,6 +19,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  /// [ MARK ] Variables: -
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final TextEditingController _emailController =
@@ -25,6 +30,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
       TextEditingController(text: '12345678');
   bool _isPasswordSecure = true;
   bool _isConfirmSecure = true;
+
+  /// [ MARK ] Utilities:-
+  void _signUp() async {
+    if (_formKey.currentState?.validate() == true) {
+      DialogUtils.showLoading(context);
+      try {
+        var userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: _emailController.text,
+                password: _passwordController.text);
+
+        /// Success
+        DialogUtils.hideLoading(context);
+        DialogUtils.showMessage(context,
+            title: "Register", content: "Signed Up Successfully");
+        Navigator.pushNamedAndRemoveUntil(
+            context, HomeTabsScreen.routeName, (Route<dynamic> route) => false);
+
+        /// Failure
+      } on FirebaseAuthException catch (error) {
+        if (error.code == 'weak-password') {
+          DialogUtils.hideLoading(context);
+          DialogUtils.showMessage(context,
+              title: "Error", content: "The password provided is too weak.");
+        } else if (error.code == 'email-already-in-use') {
+          DialogUtils.hideLoading(context);
+          DialogUtils.showMessage(context,
+              title: "Error",
+              content: "The account already exists for that email.",
+              posActionName: "OK");
+        }
+      } catch (error) {
+        DialogUtils.hideLoading(context);
+        DialogUtils.showMessage(context,
+            title: "Error",
+            content: "Error Occured: $error",
+            posActionName: "OK");
+      }
+    }
+  }
+
+  /// [ MARK ] STF LifeCycle :-
   @override
   Widget build(BuildContext context) {
     return Stack(alignment: Alignment.center, children: [
@@ -102,12 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   AuthButton(
                     title: "Sign Up",
                     onPressed: () {
-                      if (_formKey.currentState?.validate() == true) {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            HomeTabsScreen.routeName,
-                            (Route<dynamic> route) => false);
-                      }
+                      _signUp();
                     },
                   )
                 ],

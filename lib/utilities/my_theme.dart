@@ -67,6 +67,11 @@ class MyTheme {
         color: blackColor,
         fontSize: 18,
       ),
+      titleSmall: TextStyle(
+        fontFamily: "Poppins",
+        color: greyDarkColor,
+        fontSize: 16,
+      ),
     ),
   );
 
