@@ -22,7 +22,7 @@ class MyTheme {
     scaffoldBackgroundColor: lightBackgroundColor,
     primaryColor: primaryColor,
     useMaterial3:
-        true, // Solved the issue of clicking on the the whole `NavBar`
+        false, // Solved the issue of clicking on the the whole `NavBar`
 
     ///* AppBarTheme
     appBarTheme: AppBarTheme(
@@ -66,6 +66,11 @@ class MyTheme {
         fontFamily: "Poppins",
         color: blackColor,
         fontSize: 18,
+      ),
+      titleSmall: TextStyle(
+        fontFamily: "Poppins",
+        color: greyDarkColor,
+        fontSize: 16,
       ),
     ),
   );

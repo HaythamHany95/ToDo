@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
+import 'package:to_do_app/screens/auth/login_screen.dart';
+import 'package:to_do_app/screens/auth/register_screen.dart';
 import 'package:to_do_app/screens/edit_task/edit_task_screen.dart';
 import 'package:to_do_app/screens/home_tabs/home_tabs_screen.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
@@ -29,10 +31,12 @@ class MyApp extends StatelessWidget {
       theme: MyTheme.lightMode,
       darkTheme: MyTheme.darkMode,
       themeMode: ThemeMode.system,
-      initialRoute: HomeTabsScreen.routeName,
+      initialRoute: LoginScreen.routeName,
       routes: {
         HomeTabsScreen.routeName: (context) => const HomeTabsScreen(),
-        EditTaskScreen.routeName: (context) => const EditTaskScreen()
+        EditTaskScreen.routeName: (context) => const EditTaskScreen(),
+        RegisterScreen.routeName: (context) => const RegisterScreen(),
+        LoginScreen.routeName: (context) => const LoginScreen()
       },
     );
   }
