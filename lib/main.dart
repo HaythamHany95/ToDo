@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/auth/login_screen.dart';
 import 'package:to_do_app/screens/auth/register_screen.dart';
@@ -12,12 +14,15 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseFirestore.instance.disableNetwork();
+  // FirebaseFirestore.instance.disableNetwork();
   FirebaseFirestore.instance.settings =
       const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
 
-  runApp(ChangeNotifierProvider(
-    create: (context) => TasksProvider(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => AuthUserProvider()),
+      ChangeNotifierProvider(create: (context) => TasksProvider())
+    ],
     child: const MyApp(),
   ));
 }

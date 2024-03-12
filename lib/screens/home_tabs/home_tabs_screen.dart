@@ -1,8 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/providers/auth_user_provider.dart';
+import 'package:to_do_app/providers/tasks_provider.dart';
+import 'package:to_do_app/screens/auth/login_screen.dart';
 import 'package:to_do_app/screens/home_tabs/settings/settings_tab.dart';
 import 'package:to_do_app/screens/home_tabs/tasks/tasks_tab.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/newtask_bottomsheet.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/notched_navbar.dart';
+import 'package:to_do_app/utilities/dialog_util.dart';
+import 'package:to_do_app/utilities/my_theme.dart';
 
 class HomeTabsScreen extends StatefulWidget {
   static const String routeName = "home_tabs_screen";
@@ -41,6 +49,41 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
         title: const Text("To Do List"),
         titleSpacing: MediaQuery.of(context).size.width * 0.15,
         toolbarHeight: MediaQuery.of(context).size.height * 0.10,
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 20, top: 5),
+            decoration: BoxDecoration(
+                color: MyTheme.whiteColor.withOpacity(0.8),
+                shape: BoxShape.circle),
+            child: IconButton(
+              onPressed: () {
+                DialogUtils.showMessage(context,
+                    title: "Sign out",
+                    content: "Are you sure you want to sign out?",
+                    posActionName: "Cancel", negAction: () async {
+                  DialogUtils.showLoading(context);
+
+                  /// We need to change [AuthUser] and [Tasks] ever `SignIn` or `SignUp`
+                  var taskProvider =
+                      Provider.of<TasksProvider>(context, listen: false);
+                  var authUserProvider =
+                      Provider.of<AuthUserProvider>(context, listen: false);
+                  // we gonna empty the [tasks] and remove the [currentAuthUser]
+                  taskProvider.tasks = [];
+                  authUserProvider.currentAuthUser = null;
+                  // then we gonna navigte to [LoginScreen] `SignOut`
+                  await Future.delayed(Durations.extralong4);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      LoginScreen.routeName, (Route<dynamic> route) => false);
+                }, negActionName: "Yes");
+              },
+              icon: Icon(
+                Icons.logout_outlined,
+                color: MyTheme.primaryColor,
+              ),
+            ),
+          )
+        ],
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         currentIndex: _selectedTabIndex,

@@ -2,6 +2,10 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/firebase/firebase_manager.dart';
+import 'package:to_do_app/models/auth_user.dart';
+import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/screens/auth/widgets/auth_button.dart';
 import 'package:to_do_app/screens/auth/widgets/auth_textform_field.dart';
 import 'package:to_do_app/screens/home_tabs/home_tabs_screen.dart';
@@ -19,7 +23,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  /// [ MARK ] Variables: -
+  ///* [ MARK ] Variables: -
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final TextEditingController _emailController =
@@ -31,15 +35,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isPasswordSecure = true;
   bool _isConfirmSecure = true;
 
-  /// [ MARK ] Utilities:-
+  ///* [ MARK ] Utilities:-
   void _signUp() async {
     if (_formKey.currentState?.validate() == true) {
       DialogUtils.showLoading(context);
       try {
+        /// Create new [AuthUser] in `FiresbaseAuth`
         var userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: _emailController.text,
                 password: _passwordController.text);
+
+        /// Create [AuthUser] who `signedUp` above to `FiresbaseFirestore` to store his data
+        AuthUser authUser = AuthUser(
+            id: userCredential.user?.uid, email: _emailController.text);
+        await FirebaseManager.addAuthUserToFirestore(authUser);
+
+        /// Save the current [AuthUser] to [AuthUserProvider] to use it among the app
+        var authUserProvider =
+            Provider.of<AuthUserProvider>(context, listen: false);
+        authUserProvider.changeAuthUserWhenSignUpAndSignIn(authUser);
 
         /// Success
         DialogUtils.hideLoading(context);
@@ -71,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  /// [ MARK ] STF LifeCycle :-
+  ///* [ MARK ] STF LifeCycle :-
   @override
   Widget build(BuildContext context) {
     return Stack(alignment: Alignment.center, children: [

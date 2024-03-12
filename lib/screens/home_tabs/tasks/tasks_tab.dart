@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/home_tabs/tasks/widgets/calender.dart';
 import 'package:to_do_app/screens/home_tabs/tasks/widgets/taskitem_listtile.dart';
@@ -13,15 +14,18 @@ class TasksTab extends StatefulWidget {
 }
 
 class _TasksTabState extends State<TasksTab> {
-  /// [ MARK ] variables
+  ///* [ MARK ] variables
   late TasksProvider _tasksProvider;
 
-  /// [ MARK ] STF Life Cycle
+  ///* [ MARK ] STF Life Cycle
   @override
   Widget build(BuildContext context) {
     _tasksProvider = Provider.of<TasksProvider>(context);
+    var currentAuthUserId =
+        Provider.of<AuthUserProvider>(context).currentAuthUser!.id!;
+
     if (_tasksProvider.tasks.isEmpty) {
-      _tasksProvider.getAllTasks();
+      _tasksProvider.getAllTasks(currentAuthUserId);
     }
     return Column(
       children: [
@@ -30,7 +34,8 @@ class _TasksTabState extends State<TasksTab> {
           firstDate: DateTime.now().subtract(const Duration(days: 30)),
           lastDate: DateTime.now().add(const Duration(days: 365)),
           onDateChange: (selectedDate) {
-            _tasksProvider.changeDateOnCalender(selectedDate);
+            _tasksProvider.changeDateOnCalender(
+                selectedDate, currentAuthUserId);
           },
         ),
         Expanded(

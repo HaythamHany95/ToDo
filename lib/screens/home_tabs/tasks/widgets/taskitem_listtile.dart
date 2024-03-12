@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/task.dart';
+import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/edit_task/edit_task_screen.dart';
 import 'package:to_do_app/screens/home_tabs/tasks/widgets/task_check.dart';
@@ -20,6 +21,8 @@ class _TaskItemListTileState extends State<TaskItemListTile> {
   @override
   Widget build(BuildContext context) {
     var tasksProvider = Provider.of<TasksProvider>(context);
+    var currentAuthUserId =
+        Provider.of<AuthUserProvider>(context).currentAuthUser!.id!;
 
     return Container(
       decoration: const BoxDecoration(
@@ -47,9 +50,16 @@ class _TaskItemListTileState extends State<TaskItemListTile> {
                 topLeft: Radius.circular(12),
               ),
               onPressed: (context) {
-                FirebaseManager.deleteFromFirestore(widget.task)
+                FirebaseManager.deleteFromFirestore(
+                        widget.task, currentAuthUserId)
+
+                    /// When application is `offline`
                     .timeout(const Duration(milliseconds: 500), onTimeout: () {
-                  tasksProvider.getAllTasks();
+                  tasksProvider.getAllTasks(currentAuthUserId);
+
+                  /// When the application is `online`
+                }).then((_) {
+                  tasksProvider.getAllTasks(currentAuthUserId);
                 });
               },
               backgroundColor: MyTheme.redColor,
@@ -98,7 +108,7 @@ class _TaskItemListTileState extends State<TaskItemListTile> {
                 onTap: () {
                   setState(() {
                     widget.task.isDone = !widget.task.isDone!;
-                    FirebaseManager.doneTask(widget.task)
+                    FirebaseManager.doneTask(widget.task, currentAuthUserId)
                         .timeout(Durations.medium4, onTimeout: () {});
                   });
                 },

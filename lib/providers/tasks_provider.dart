@@ -9,10 +9,10 @@ class TasksProvider extends ChangeNotifier {
 
   /// Fetching All Tasks from Firestore.
   /// Every time make CRUD using it to reload date
-  void getAllTasks() async {
+  void getAllTasks(String uid) async {
     /// Get all [tasks]
     QuerySnapshot<Task> querySnapshot =
-        await FirebaseManager.getTasksCollection().get();
+        await FirebaseManager.getTasksCollection(uid).get();
     tasks = querySnapshot.docs.map((document) => document.data()).toList();
 
     /// Filtering [tasks] by every `task date`
@@ -33,8 +33,8 @@ class TasksProvider extends ChangeNotifier {
   }
 
   /// Making the `CurrentDate` on the calender to the day chosen by the `User`
-  void changeDateOnCalender(DateTime newDate) {
+  void changeDateOnCalender(DateTime newDate, String uid) {
     selectedDate = newDate;
-    getAllTasks();
+    getAllTasks(uid);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/task.dart';
+import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/add_button.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/task_textformfied.dart';
@@ -15,14 +16,14 @@ class NewTaskBottomSheet extends StatefulWidget {
 }
 
 class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
-  /// [ MARK ] Variables: -
+  ///* [ MARK ] Variables: -
   final _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate = DateTime.now();
   String? _taskTitle;
   String? _taskDesc;
   late TasksProvider _tasksProvider;
 
-  /// [ MARK ] Utilities: -
+  ///* [ MARK ] Utilities: -
   void _showCalender() async {
     var calenderDate = await showDatePicker(
       context: context,
@@ -37,11 +38,21 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
   }
 
   void _addTask() {
+    var currentAuthUserId =
+        Provider.of<AuthUserProvider>(context, listen: false)
+            .currentAuthUser!
+            .id;
     Task newTask =
         Task(title: _taskTitle, desc: _taskDesc, date: _selectedDate);
-    FirebaseManager.addTaskToFirestore(newTask)
+    FirebaseManager.addTaskToFirestore(newTask, currentAuthUserId!)
+
+        /// When application is `offline`
         .timeout(const Duration(milliseconds: 500), onTimeout: () {
-      _tasksProvider.getAllTasks();
+      _tasksProvider.getAllTasks(currentAuthUserId);
+
+      /// When application is `online`
+    }).then((_) {
+      _tasksProvider.getAllTasks(currentAuthUserId);
     });
   }
 
