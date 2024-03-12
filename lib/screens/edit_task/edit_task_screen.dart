@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/task.dart';
+import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/task_textformfied.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
@@ -16,12 +17,17 @@ class EditTaskScreen extends StatefulWidget {
 }
 
 class _EditTaskScreenState extends State<EditTaskScreen> {
+  ///* [ MARK ] variables
   final _formKey = GlobalKey<FormState>();
 
+  ///* [ MARK ] STF Life Cycle
   @override
   Widget build(BuildContext context) {
     var taskArgs = ModalRoute.of(context)?.settings.arguments as Task;
     var taskProvider = Provider.of<TasksProvider>(context);
+    var currentAuthUserId =
+        Provider.of<AuthUserProvider>(context).currentAuthUser!.id;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("To Do List"),
@@ -93,9 +99,20 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                     .titleLarge
                                     ?.copyWith(fontSize: 18)),
                             onPressed: () {
-                              FirebaseManager.updateTaskFromFirestore(taskArgs)
+                              FirebaseManager.updateTaskFromFirestore(
+                                      taskArgs, currentAuthUserId!)
+
+                                  /// When application is `offline`
                                   .timeout(Durations.medium4, onTimeout: () {
-                                taskProvider.getAllTasks();
+                                taskProvider.getAllTasks(currentAuthUserId);
+                                // Navigator.pop(context);
+                                ///
+                                ///! Error from [context] here,
+                                /// remove one of those contexts and it works
+                                ///
+                                /// When application is `offline`
+                              }).then((_) {
+                                taskProvider.getAllTasks(currentAuthUserId);
                                 Navigator.pop(context);
                               });
                             },

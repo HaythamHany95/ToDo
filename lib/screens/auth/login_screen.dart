@@ -2,6 +2,9 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/firebase/firebase_manager.dart';
+import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/screens/auth/register_screen.dart';
 import 'package:to_do_app/screens/auth/widgets/auth_button.dart';
 import 'package:to_do_app/screens/auth/widgets/auth_textform_field.dart';
@@ -20,7 +23,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  /// [ MARK ] Variables :-
+  ///* [ MARK ] Variables :-
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final TextEditingController _emailController =
@@ -29,15 +32,32 @@ class _LoginScreenState extends State<LoginScreen> {
       TextEditingController(text: '12345678');
   bool _isPasswordSecure = true;
 
-  /// [ MARK ] Utilities :-
+  ///* [ MARK ] Utilities :-
   void _signIn() async {
     if (_formKey.currentState?.validate() == true) {
       DialogUtils.showLoading(context);
       try {
+        /// `Sign In` with an existing [AuthUser] from `FirebaseAuth`
         var userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: _emailController.text,
                 password: _passwordController.text);
+
+        /// Read the existing [AuthUser]'s data from `FiresbaseFirestore` to show when navigate to `HomeScreen`
+
+        var authUser = await FirebaseManager.readAuthUserFromFirestore(
+            userCredential.user?.uid ?? "");
+
+        /// Checking if there isn't a user in `FiresbaseFirestore` return and dont resume the operation down below
+        /// And Don't worry: It rarely happens
+        if (authUser == null) {
+          return;
+        }
+
+        /// Save the current [AuthUser] to [AuthUserProvider] to use it among the app
+        var authUserProvider =
+            Provider.of<AuthUserProvider>(context, listen: false);
+        authUserProvider.changeAuthUserWhenSignUpAndSignIn(authUser);
 
         /// Success
         DialogUtils.hideLoading(context);
@@ -61,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  /// [ MARK ] STF LifeCycle :-
+  ///* [ MARK ] STF LifeCycle :-
   @override
   Widget build(BuildContext context) {
     return Stack(alignment: Alignment.center, children: [
