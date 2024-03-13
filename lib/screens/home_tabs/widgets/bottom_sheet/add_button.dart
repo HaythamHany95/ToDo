@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/providers/app_config_provider.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class CircleElevatedButton extends StatelessWidget {
@@ -8,13 +10,19 @@ class CircleElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var appConfigProvider = Provider.of<AppConfiguresProvider>(context);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: MyTheme.primaryColor,
-        elevation: 20,
-        shadowColor: Colors.black,
+        elevation: 50,
+        shadowColor: MyTheme.petrolColor,
         shape: CircleBorder(
-          side: BorderSide(width: 5, color: MyTheme.whiteColor),
+          side: BorderSide(
+            width: 5,
+            color: (appConfigProvider.currentMode == ThemeMode.light)
+                ? MyTheme.whiteColor
+                : MyTheme.petrolColor,
+          ),
         ),
         padding: const EdgeInsets.all(20),
       ),

@@ -12,6 +12,9 @@ import 'package:to_do_app/screens/home_tabs/widgets/notched_navbar.dart';
 import 'package:to_do_app/utilities/dialog_util.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
+///localization_import
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class HomeTabsScreen extends StatefulWidget {
   static const String routeName = "home_tabs_screen";
 
@@ -32,7 +35,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
         context: context,
         builder: (context) =>
 
-            /// TODO: padding the bottomSheet
+            /// TODOO: padding the bottomSheet
             const NewTaskBottomSheet());
     //  Padding(
     //       padding: EdgeInsets.only(
@@ -46,22 +49,26 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("To Do List"),
+        title: (_selectedTabIndex == 0)
+            ? Text(AppLocalizations.of(context)!.title)
+            : Text(AppLocalizations.of(context)!.settings),
         titleSpacing: MediaQuery.of(context).size.width * 0.15,
         toolbarHeight: MediaQuery.of(context).size.height * 0.10,
         actions: [
           Container(
-            margin: const EdgeInsets.only(right: 20, top: 5),
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
             decoration: BoxDecoration(
                 color: MyTheme.whiteColor.withOpacity(0.8),
                 shape: BoxShape.circle),
             child: IconButton(
               onPressed: () {
                 DialogUtils.showMessage(context,
-                    title: "Sign out",
-                    content: "Are you sure you want to sign out?",
-                    posActionName: "Cancel", negAction: () async {
-                  DialogUtils.showLoading(context);
+                    title: AppLocalizations.of(context)!.sign_out,
+                    content: AppLocalizations.of(context)!.sign_out_msg,
+                    posActionName: AppLocalizations.of(context)!.cancel,
+                    negAction: () async {
+                  DialogUtils.showLoading(context,
+                      message: AppLocalizations.of(context)!.loading);
 
                   /// We need to change [AuthUser] and [Tasks] ever `SignIn` or `SignUp`
                   var taskProvider =
@@ -75,7 +82,7 @@ class _HomeTabsScreenState extends State<HomeTabsScreen> {
                   await Future.delayed(Durations.extralong4);
                   Navigator.of(context).pushNamedAndRemoveUntil(
                       LoginScreen.routeName, (Route<dynamic> route) => false);
-                }, negActionName: "Yes");
+                }, negActionName: AppLocalizations.of(context)!.yes);
               },
               icon: Icon(
                 Icons.logout_outlined,

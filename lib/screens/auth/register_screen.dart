@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/auth_user.dart';
+import 'package:to_do_app/providers/app_config_provider.dart';
 import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/screens/auth/widgets/auth_button.dart';
 import 'package:to_do_app/screens/auth/widgets/auth_textform_field.dart';
@@ -12,6 +13,9 @@ import 'package:to_do_app/screens/home_tabs/home_tabs_screen.dart';
 import 'package:to_do_app/utilities/dialog_util.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 import 'package:to_do_app/utilities/myvalidation.dart';
+
+///localization_import
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const String routeName = 'register_screen';
@@ -38,7 +42,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   ///* [ MARK ] Utilities:-
   void _signUp() async {
     if (_formKey.currentState?.validate() == true) {
-      DialogUtils.showLoading(context);
+      DialogUtils.showLoading(context,
+          message: AppLocalizations.of(context)!.loading);
       try {
         /// Create new [AuthUser] in `FiresbaseAuth`
         var userCredential = await FirebaseAuth.instance
@@ -58,8 +63,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         /// Success
         DialogUtils.hideLoading(context);
-        DialogUtils.showMessage(context,
-            title: "Register", content: "Signed Up Successfully");
+        // DialogUtils.showMessage(context,
+        // title: AppLocalizations.of(context)!.create_acc, content: AppLocalizations.of(context)!.success);
         Navigator.pushNamedAndRemoveUntil(
             context, HomeTabsScreen.routeName, (Route<dynamic> route) => false);
 
@@ -68,20 +73,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (error.code == 'weak-password') {
           DialogUtils.hideLoading(context);
           DialogUtils.showMessage(context,
-              title: "Error", content: "The password provided is too weak.");
+              title: AppLocalizations.of(context)!.error,
+              content: AppLocalizations.of(context)!.valid_pass);
         } else if (error.code == 'email-already-in-use') {
           DialogUtils.hideLoading(context);
           DialogUtils.showMessage(context,
-              title: "Error",
-              content: "The account already exists for that email.",
-              posActionName: "OK");
+              title: AppLocalizations.of(context)!.error,
+              content: AppLocalizations.of(context)!.email_exists,
+              posActionName: AppLocalizations.of(context)!.ok);
         }
       } catch (error) {
         DialogUtils.hideLoading(context);
         DialogUtils.showMessage(context,
-            title: "Error",
+            title: AppLocalizations.of(context)!.error,
             content: "Error Occured: $error",
-            posActionName: "OK");
+            posActionName: AppLocalizations.of(context)!.ok);
       }
     }
   }
@@ -89,24 +95,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
   ///* [ MARK ] STF LifeCycle :-
   @override
   Widget build(BuildContext context) {
+    var appConfigProvider = Provider.of<AppConfiguresProvider>(context);
+
     return Stack(alignment: Alignment.center, children: [
       Image.asset(
-        'assets/images/splash_icon.png',
-        opacity: const AlwaysStoppedAnimation(0.8),
+        (appConfigProvider.currentMode == ThemeMode.light)
+            ? 'assets/images/splash_icon.png'
+            : 'assets/images/splash_icon_dark.png',
+        opacity: (appConfigProvider.currentMode == ThemeMode.light)
+            ? const AlwaysStoppedAnimation(0.8)
+            : const AlwaysStoppedAnimation(0.7),
         width: double.infinity,
         height: double.infinity,
         fit: BoxFit.cover,
       ),
       Scaffold(
-        backgroundColor: Colors.white.withOpacity(0.85),
+        backgroundColor: (appConfigProvider.currentMode == ThemeMode.light)
+            ? Colors.white.withOpacity(0.85)
+            : MyTheme.darkBackgroundColor.withOpacity(0.8),
         appBar: AppBar(
-          title: const Text(
-            'Create Account',
+          title: Text(
+            AppLocalizations.of(context)!.create_acc,
           ),
           toolbarHeight: 100,
           centerTitle: true,
           backgroundColor: Colors.transparent,
-          foregroundColor: MyTheme.primaryColor,
+          foregroundColor: (appConfigProvider.currentMode == ThemeMode.light)
+              ? MyTheme.primaryColor
+              : MyTheme.whiteColor,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -120,12 +136,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: MediaQuery.of(context).size.height * 0.09,
                   ),
                   AuthTextFormField(
-                    labelText: "Email",
+                    labelText: AppLocalizations.of(context)!.email,
                     controller: _emailController,
                     validator: MyValidation.validateEmail,
                   ),
                   AuthTextFormField(
-                    labelText: "Password",
+                    labelText: AppLocalizations.of(context)!.pass,
                     controller: _passwordController,
                     validator: MyValidation.validatePassword,
                     obscureText: _isPasswordSecure,
@@ -135,15 +151,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           _isPasswordSecure = !_isPasswordSecure;
                         });
                       },
-                      icon: const Icon(Icons.remove_red_eye_outlined),
+                      icon: Icon(
+                        Icons.remove_red_eye_outlined,
+                        color:
+                            (appConfigProvider.currentMode == ThemeMode.light)
+                                ? MyTheme.primaryColor
+                                : MyTheme.whiteColor,
+                      ),
                     ),
                   ),
                   AuthTextFormField(
-                    labelText: "Confirm Password",
+                    labelText: AppLocalizations.of(context)!.confirm_Pass,
                     controller: _confirPasswordController,
                     validator: (text) {
                       if (text != _passwordController.text) {
-                        return 'Password does not confirmed';
+                        return AppLocalizations.of(context)!.valid_confirm_pass;
                       } else {
                         return null;
                       }
@@ -155,14 +177,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           _isConfirmSecure = !_isConfirmSecure;
                         });
                       },
-                      icon: const Icon(Icons.remove_red_eye_outlined),
+                      icon: Icon(
+                        Icons.remove_red_eye_outlined,
+                        color:
+                            (appConfigProvider.currentMode == ThemeMode.light)
+                                ? MyTheme.primaryColor
+                                : MyTheme.whiteColor,
+                      ),
                     ),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.16,
                   ),
                   AuthButton(
-                    title: "Sign Up",
+                    title: AppLocalizations.of(context)!.sign_up,
                     onPressed: () {
                       _signUp();
                     },

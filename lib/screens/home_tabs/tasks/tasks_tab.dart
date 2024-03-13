@@ -22,7 +22,7 @@ class _TasksTabState extends State<TasksTab> {
   Widget build(BuildContext context) {
     _tasksProvider = Provider.of<TasksProvider>(context);
     var currentAuthUserId =
-        Provider.of<AuthUserProvider>(context).currentAuthUser!.id!;
+        Provider.of<AuthUserProvider>(context).currentAuthUser?.id ?? "122";
 
     if (_tasksProvider.tasks.isEmpty) {
       _tasksProvider.getAllTasks(currentAuthUserId);

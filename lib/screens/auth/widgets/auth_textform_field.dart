@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/providers/app_config_provider.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class AuthTextFormField extends StatelessWidget {
@@ -18,6 +20,7 @@ class AuthTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var appConfigProvider = Provider.of<AppConfiguresProvider>(context);
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 15),
       child: TextFormField(
@@ -29,10 +32,15 @@ class AuthTextFormField extends StatelessWidget {
           decoration: InputDecoration(
               errorMaxLines: 3,
               suffixIcon: suffixIcon,
-              labelStyle: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: MyTheme.petrolColor, fontSize: 14),
+              labelStyle: (appConfigProvider.currentMode == ThemeMode.light)
+                  ? Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: MyTheme.petrolColor, fontSize: 14)
+                  : Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: MyTheme.whiteColor, fontSize: 14),
               labelText: labelText,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),

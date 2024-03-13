@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/task.dart';
+import 'package:to_do_app/providers/app_config_provider.dart';
 import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/add_button.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/task_textformfied.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
+
+///localization_import
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NewTaskBottomSheet extends StatefulWidget {
   const NewTaskBottomSheet({super.key});
@@ -40,11 +44,12 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
   void _addTask() {
     var currentAuthUserId =
         Provider.of<AuthUserProvider>(context, listen: false)
-            .currentAuthUser!
-            .id;
+                .currentAuthUser
+                ?.id ??
+            "333e";
     Task newTask =
         Task(title: _taskTitle, desc: _taskDesc, date: _selectedDate);
-    FirebaseManager.addTaskToFirestore(newTask, currentAuthUserId!)
+    FirebaseManager.addTaskToFirestore(newTask, currentAuthUserId)
 
         /// When application is `offline`
         .timeout(const Duration(milliseconds: 500), onTimeout: () {
@@ -60,10 +65,13 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
   @override
   Widget build(BuildContext context) {
     _tasksProvider = Provider.of<TasksProvider>(context);
+    var appConfigProvider = Provider.of<AppConfiguresProvider>(context);
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: (appConfigProvider.currentMode == ThemeMode.light)
+            ? MyTheme.whiteColor
+            : MyTheme.petrolColor,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
@@ -73,10 +81,11 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
       child: Form(
         key: _formKey,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text(
-              "Add New Task",
+              AppLocalizations.of(context)!.add_new_task,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium,
             ),
@@ -87,27 +96,23 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
               },
               validator: (text) {
                 if (text == null || text.isEmpty) {
-                  return "You should enter your Task ";
+                  return AppLocalizations.of(context)!.valid_task;
                 }
                 return null;
               },
-              hintText: "enter Your Task",
+              hintText: AppLocalizations.of(context)!.enter_task,
             ),
             TaskTextFormField(
               onChanged: (newText) {
                 _taskDesc = newText;
                 setState(() {});
               },
-              hintText: "enter Task Description",
+              hintText: AppLocalizations.of(context)!.enter_desc,
               maxLines: 4,
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Select Date",
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.start,
-              ),
+            Text(
+              AppLocalizations.of(context)!.select_date,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             InkWell(
               onTap: () {
@@ -119,6 +124,7 @@ class _NewTaskBottomSheetState extends State<NewTaskBottomSheet> {
                     .textTheme
                     .titleMedium
                     ?.copyWith(color: MyTheme.greyDarkColor),
+                textAlign: TextAlign.center,
               ),
             ),
             CircleElevatedButton(

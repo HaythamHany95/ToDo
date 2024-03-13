@@ -55,26 +55,102 @@ class MyTheme {
           color: greyLightColor,
         )),
 
+    ///* BottomSheetThemeData
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: Colors.transparent,
+    ),
+
     ///* TextTheme
     textTheme: TextTheme(
       titleLarge: TextStyle(
         fontFamily: "Poppins",
         color: whiteColor,
         fontSize: 22,
+        fontWeight: FontWeight.w700,
       ),
       titleMedium: TextStyle(
         fontFamily: "Poppins",
         color: blackColor,
         fontSize: 18,
+        fontWeight: FontWeight.w700,
       ),
       titleSmall: TextStyle(
         fontFamily: "Poppins",
         color: greyDarkColor,
         fontSize: 16,
+        fontWeight: FontWeight.w700,
       ),
     ),
   );
 
   ///* DarkMode Theme: -
-  static ThemeData darkMode = ThemeData();
+  static ThemeData darkMode = ThemeData(
+    scaffoldBackgroundColor: darkBackgroundColor,
+    primaryColor: primaryColor,
+    primaryColorDark: darkBackgroundColor,
+    useMaterial3:
+        false, // Solved the issue of clicking on the the whole `NavBar`
+
+    ///* AppBarTheme
+    appBarTheme: AppBarTheme(
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      foregroundColor: darkBackgroundColor,
+      backgroundColor: primaryColor,
+    ),
+
+    ///* FloatingActionButtonThemeData
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: primaryColor,
+        foregroundColor: whiteColor,
+        iconSize: 33,
+        shape: StadiumBorder(
+            side: BorderSide(
+          width: 4,
+          color: petrolColor,
+        ))),
+
+    ///* BottomNavigationBarThemeData
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        backgroundColor: Colors.transparent,
+        selectedIconTheme: IconThemeData(
+          size: 33,
+          color: primaryColor,
+        ),
+        unselectedIconTheme: IconThemeData(
+          size: 33,
+          color: whiteColor,
+        )),
+
+    ///* BottomSheetThemeData
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: Colors.transparent,
+    ),
+
+    ///* TextTheme
+    textTheme: TextTheme(
+      titleLarge: TextStyle(
+        fontFamily: "Poppins",
+        color: petrolColor,
+        fontSize: 22,
+        fontWeight: FontWeight.w700,
+      ),
+      titleMedium: TextStyle(
+        fontFamily: "Poppins",
+        color: whiteColor,
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+      ),
+      titleSmall: TextStyle(
+        fontFamily: "Poppins",
+        color: greyLightColor,
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+  );
 }

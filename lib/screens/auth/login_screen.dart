@@ -1,9 +1,10 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
+import 'package:to_do_app/providers/app_config_provider.dart';
 import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/screens/auth/register_screen.dart';
 import 'package:to_do_app/screens/auth/widgets/auth_button.dart';
@@ -12,6 +13,9 @@ import 'package:to_do_app/screens/home_tabs/home_tabs_screen.dart';
 import 'package:to_do_app/utilities/dialog_util.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 import 'package:to_do_app/utilities/myvalidation.dart';
+
+///localization_import
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = 'login_screen';
@@ -35,7 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
   ///* [ MARK ] Utilities :-
   void _signIn() async {
     if (_formKey.currentState?.validate() == true) {
-      DialogUtils.showLoading(context);
+      DialogUtils.showLoading(context,
+          message: AppLocalizations.of(context)!.loading);
       try {
         /// `Sign In` with an existing [AuthUser] from `FirebaseAuth`
         var userCredential = await FirebaseAuth.instance
@@ -68,15 +73,17 @@ class _LoginScreenState extends State<LoginScreen> {
         if (error.code == 'invalid-credential') {
           DialogUtils.hideLoading(context);
           DialogUtils.showMessage(context,
-              title: "Error",
-              content: "Wrong email or password",
-              posActionName: "OK");
+              title: AppLocalizations.of(context)?.error,
+              content: AppLocalizations.of(context)!.invalid_email,
+              posActionName: AppLocalizations.of(context)?.ok);
         }
       } catch (error) {
         DialogUtils.hideLoading(context);
 
         DialogUtils.showMessage(context,
-            title: "Error", content: "$error", posActionName: "OK");
+            title: AppLocalizations.of(context)?.error,
+            content: "$error",
+            posActionName: AppLocalizations.of(context)?.ok);
       }
     }
   }
@@ -84,16 +91,24 @@ class _LoginScreenState extends State<LoginScreen> {
   ///* [ MARK ] STF LifeCycle :-
   @override
   Widget build(BuildContext context) {
+    var appConfigProvider = Provider.of<AppConfiguresProvider>(context);
+
     return Stack(alignment: Alignment.center, children: [
       Image.asset(
-        'assets/images/splash_icon.png',
-        opacity: const AlwaysStoppedAnimation(0.8),
+        (appConfigProvider.currentMode == ThemeMode.light)
+            ? 'assets/images/splash_icon.png'
+            : 'assets/images/splash_icon_dark.png',
+        opacity: (appConfigProvider.currentMode == ThemeMode.light)
+            ? const AlwaysStoppedAnimation(0.8)
+            : const AlwaysStoppedAnimation(0.7),
         width: double.infinity,
         height: double.infinity,
         fit: BoxFit.cover,
       ),
       Scaffold(
-        backgroundColor: Colors.white.withOpacity(0.85),
+        backgroundColor: (appConfigProvider.currentMode == ThemeMode.light)
+            ? Colors.white.withOpacity(0.85)
+            : MyTheme.darkBackgroundColor.withOpacity(0.8),
         appBar: AppBar(
           title: const Text(
             '',
@@ -115,22 +130,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Text(
-                    "Welcome Back",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(color: MyTheme.primaryColor),
+                    AppLocalizations.of(context)!.welcome,
+                    style: (appConfigProvider.currentMode == ThemeMode.light)
+                        ? Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(color: MyTheme.primaryColor)
+                        : Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(color: MyTheme.whiteColor),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
                   ),
                   AuthTextFormField(
-                    labelText: "Email",
+                    labelText: AppLocalizations.of(context)!.email,
                     controller: _emailController,
                     validator: MyValidation.validateEmail,
                   ),
                   AuthTextFormField(
-                    labelText: "Password",
+                    labelText: AppLocalizations.of(context)!.pass,
                     controller: _passwordController,
                     validator: MyValidation.validatePassword,
                     obscureText: _isPasswordSecure,
@@ -140,14 +160,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           _isPasswordSecure = !_isPasswordSecure;
                         });
                       },
-                      icon: const Icon(Icons.remove_red_eye_outlined),
+                      icon: Icon(
+                        Icons.remove_red_eye_outlined,
+                        color:
+                            (appConfigProvider.currentMode == ThemeMode.light)
+                                ? MyTheme.primaryColor
+                                : MyTheme.whiteColor,
+                      ),
                     ),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.07,
                   ),
                   AuthButton(
-                    title: "Login",
+                    title: AppLocalizations.of(context)!.login,
                     onPressed: () {
                       _signIn();
                     },
@@ -160,11 +186,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.pushNamed(context, RegisterScreen.routeName);
                       },
                       child: Text(
-                        "Don't have an account?",
+                        AppLocalizations.of(context)!.havent_acc,
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium
-                            ?.copyWith(fontSize: 12),
+                            ?.copyWith(
+                                fontSize: 12, fontWeight: FontWeight.bold),
                       ))
                 ],
               ),
