@@ -1,5 +1,7 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/providers/app_config_provider.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class Calender extends StatelessWidget {
@@ -16,11 +18,12 @@ class Calender extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var appConfigProvider = Provider.of<AppConfiguresProvider>(context);
+
     return Container(
       alignment: Alignment.center,
       height: MediaQuery.of(context).size.height * 0.16,
       decoration: BoxDecoration(
-        color: Colors.amber,
         gradient: LinearGradient(
             colors: [MyTheme.primaryColor, Colors.transparent],
             begin: Alignment.topCenter,
@@ -30,6 +33,7 @@ class Calender extends StatelessWidget {
 
       ///* EasyInfiniteDateTimeLine
       child: EasyInfiniteDateTimeLine(
+        locale: appConfigProvider.currentLanguage,
         timeLineProps: const EasyTimeLineProps(
             margin: EdgeInsets.only(top: 13),
             vPadding: 15,
@@ -37,14 +41,27 @@ class Calender extends StatelessWidget {
             hPadding: 2),
         showTimelineHeader: false,
         dayProps: EasyDayProps(
-          todayStyle: DayStyle(
+          activeDayStyle: DayStyle(
             decoration: BoxDecoration(
-                color: MyTheme.whiteColor,
+                color: (appConfigProvider.currentMode == ThemeMode.light)
+                    ? MyTheme.primaryColor
+                    : MyTheme.petrolColor,
+                borderRadius: BorderRadius.circular(10)),
+          ),
+          inactiveDayNumStyle: Theme.of(context).textTheme.titleMedium,
+          todayStyle: DayStyle(
+            dayNumStyle: Theme.of(context).textTheme.titleMedium,
+            decoration: BoxDecoration(
+                color: (appConfigProvider.currentMode == ThemeMode.light)
+                    ? MyTheme.whiteColor
+                    : MyTheme.blackColor,
                 borderRadius: BorderRadius.circular(10)),
           ),
           inactiveDayStyle: DayStyle(
             decoration: BoxDecoration(
-                color: MyTheme.whiteColor,
+                color: (appConfigProvider.currentMode == ThemeMode.light)
+                    ? MyTheme.whiteColor
+                    : MyTheme.petrolColor,
                 borderRadius: BorderRadius.circular(10)),
           ),
         ),

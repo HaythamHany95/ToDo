@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/providers/app_config_provider.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class NotchedBottomNavigationBar extends StatelessWidget {
@@ -13,12 +15,15 @@ class NotchedBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var appConfigProvider = Provider.of<AppConfiguresProvider>(context);
     return BottomAppBar(
       padding: const EdgeInsets.symmetric(vertical: 10),
       elevation: 0,
       shape: const CircularNotchedRectangle(),
       notchMargin: 12,
-      color: MyTheme.whiteColor,
+      color: (appConfigProvider.currentMode == ThemeMode.light)
+          ? MyTheme.whiteColor
+          : MyTheme.petrolColor,
       child: BottomNavigationBar(
           onTap: onTap,
           currentIndex: currentIndex,

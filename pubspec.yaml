@@ -12,17 +12,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
   cupertino_icons: ^1.0.2
   flutter_native_splash: ^2.3.10
   flutter_slidable: ^3.0.1
-  easy_date_timeline: ^1.0.5
+  easy_date_timeline: ^1.0.3
   firebase_core: ^2.25.5
   cloud_firestore: ^4.15.6
   provider: ^6.1.2
   firebase_auth: ^4.17.8
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -33,9 +35,9 @@ dev_dependencies:
 
 
 flutter:
-
-
   uses-material-design: true
+  generate: true 
+
 
   assets:
     - assets/images/

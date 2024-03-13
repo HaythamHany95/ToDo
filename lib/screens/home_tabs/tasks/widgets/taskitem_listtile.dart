@@ -3,11 +3,15 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/task.dart';
+import 'package:to_do_app/providers/app_config_provider.dart';
 import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/edit_task/edit_task_screen.dart';
 import 'package:to_do_app/screens/home_tabs/tasks/widgets/task_check.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
+
+///localization_import
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TaskItemListTile extends StatefulWidget {
   final Task task;
@@ -20,18 +24,22 @@ class TaskItemListTile extends StatefulWidget {
 class _TaskItemListTileState extends State<TaskItemListTile> {
   @override
   Widget build(BuildContext context) {
+    var appConfigProvider = Provider.of<AppConfiguresProvider>(context);
     var tasksProvider = Provider.of<TasksProvider>(context);
     var currentAuthUserId =
-        Provider.of<AuthUserProvider>(context).currentAuthUser!.id!;
+        Provider.of<AuthUserProvider>(context).currentAuthUser?.id ?? "12";
 
     return Container(
-      decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(
-              12,
-            ),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
+          Radius.circular(
+            12,
           ),
-          color: Colors.white),
+        ),
+        color: (appConfigProvider.currentMode == ThemeMode.light)
+            ? MyTheme.whiteColor
+            : MyTheme.petrolColor,
+      ),
       margin: const EdgeInsets.all(10),
 
       ///* Slidable Widget
@@ -65,11 +73,14 @@ class _TaskItemListTileState extends State<TaskItemListTile> {
               backgroundColor: MyTheme.redColor,
               foregroundColor: Colors.white,
               icon: Icons.delete,
-              label: 'Delete',
+              label: AppLocalizations.of(context)!.delete,
             ),
           ],
         ),
         child: Card(
+          color: (appConfigProvider.currentMode == ThemeMode.light)
+              ? MyTheme.whiteColor
+              : MyTheme.petrolColor,
           semanticContainer: false,
           elevation: 0,
           child: Padding(
@@ -101,7 +112,13 @@ class _TaskItemListTileState extends State<TaskItemListTile> {
               ),
               subtitle: Container(
                   margin: const EdgeInsets.only(top: 5),
-                  child: Text(widget.task.desc ?? "")),
+                  child: Text(
+                    widget.task.desc ?? "",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(fontSize: 12),
+                  )),
               trailing: InkWell(
                 overlayColor:
                     const MaterialStatePropertyAll(Colors.transparent),
@@ -114,7 +131,7 @@ class _TaskItemListTileState extends State<TaskItemListTile> {
                 },
                 child: (widget.task.isDone!)
                     ? Text(
-                        "Done !",
+                        AppLocalizations.of(context)!.done,
                         style: Theme.of(context)
                             .textTheme
                             .titleLarge

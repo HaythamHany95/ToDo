@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/firebase/firebase_manager.dart';
 import 'package:to_do_app/models/task.dart';
+import 'package:to_do_app/providers/app_config_provider.dart';
 import 'package:to_do_app/providers/auth_user_provider.dart';
 import 'package:to_do_app/providers/tasks_provider.dart';
 import 'package:to_do_app/screens/home_tabs/widgets/bottom_sheet/task_textformfied.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
+
+///localization_import
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditTaskScreen extends StatefulWidget {
   static const String routeName = 'edit_task_screen';
@@ -26,11 +30,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     var taskArgs = ModalRoute.of(context)?.settings.arguments as Task;
     var taskProvider = Provider.of<TasksProvider>(context);
     var currentAuthUserId =
-        Provider.of<AuthUserProvider>(context).currentAuthUser!.id;
+        Provider.of<AuthUserProvider>(context).currentAuthUser?.id ?? "11";
+    var appConfigProvider = Provider.of<AppConfiguresProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("To Do List"),
+        title: Text(AppLocalizations.of(context)!.title),
         toolbarHeight: MediaQuery.of(context).size.height * 0.12,
       ),
       body: Stack(children: [
@@ -49,7 +54,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                   bottom: MediaQuery.of(context).size.height * 0.1,
                 ),
                 decoration: BoxDecoration(
-                    color: MyTheme.whiteColor,
+                    color: (appConfigProvider.currentMode == ThemeMode.light)
+                        ? MyTheme.whiteColor
+                        : MyTheme.petrolColor,
                     borderRadius: const BorderRadius.all(Radius.circular(20))),
                 child: Form(
                     child: Padding(
@@ -59,7 +66,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          "Edit Task",
+                          AppLocalizations.of(context)!.edit_task,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
@@ -71,18 +78,18 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                           },
                           validator: (text) {
                             if (text == null || text.isEmpty) {
-                              return "You should enter your Task ";
+                              return AppLocalizations.of(context)!.valid_task;
                             }
                             return null;
                           },
-                          hintText: "enter Your Task",
+                          hintText: AppLocalizations.of(context)!.enter_task,
                         ),
                         TaskTextFormField(
                           initialValue: taskArgs.desc,
                           onChanged: (newText) {
                             taskArgs.desc = newText;
                           },
-                          hintText: "enter Task Description",
+                          hintText: AppLocalizations.of(context)!.enter_desc,
                           maxLines: 4,
                         ),
                         const SizedBox(
@@ -100,7 +107,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                     ?.copyWith(fontSize: 18)),
                             onPressed: () {
                               FirebaseManager.updateTaskFromFirestore(
-                                      taskArgs, currentAuthUserId!)
+                                      taskArgs, currentAuthUserId)
 
                                   /// When application is `offline`
                                   .timeout(Durations.medium4, onTimeout: () {
@@ -116,7 +123,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                 Navigator.pop(context);
                               });
                             },
-                            child: const Text("Save Changes"))
+                            child: Text(
+                                AppLocalizations.of(context)!.save_changes))
                       ]),
                 ))))
       ]),
