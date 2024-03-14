@@ -27,6 +27,9 @@ class SettingsTab extends StatelessWidget {
               hintText: (appConfigProvider.currentLanguage == 'en')
                   ? AppLocalizations.of(context)!.english
                   : AppLocalizations.of(context)!.arabic,
+              value: (appConfigProvider.currentLanguage == 'en')
+                  ? "English"
+                  : "Arabic",
               items: [
                 DropdownMenuItem(
                     value: "English",
@@ -71,6 +74,9 @@ class SettingsTab extends StatelessWidget {
               hintText: (appConfigProvider.currentMode == ThemeMode.light)
                   ? AppLocalizations.of(context)!.light
                   : AppLocalizations.of(context)!.dark,
+              value: (appConfigProvider.currentMode == ThemeMode.light)
+                  ? "Light"
+                  : "Dark",
               items: [
                 DropdownMenuItem(
                     value: "Light",
@@ -100,7 +106,7 @@ class SettingsTab extends StatelessWidget {
               onChanged: (newValue) {
                 if (newValue == "Light") {
                   appConfigProvider.changeAppMode(ThemeMode.light);
-                } else if (newValue == "Dark") {
+                } else {
                   appConfigProvider.changeAppMode(ThemeMode.dark);
                 }
               })

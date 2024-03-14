@@ -16,6 +16,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  AppConfiguresProvider appConfiguresProvider = AppConfiguresProvider();
+  appConfiguresProvider.readAppConfigsData();
   await Firebase.initializeApp();
   // FirebaseFirestore.instance.disableNetwork();
   FirebaseFirestore.instance.settings =
@@ -23,7 +25,7 @@ void main() async {
 
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) => AppConfiguresProvider()),
+      ChangeNotifierProvider(create: (context) => appConfiguresProvider),
       ChangeNotifierProvider(create: (context) => AuthUserProvider()),
       ChangeNotifierProvider(create: (context) => TasksProvider()),
     ],
