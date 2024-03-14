@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/providers/app_config_provider.dart';
 import 'package:to_do_app/utilities/my_theme.dart';
 
 class TaskTextFormField extends StatelessWidget {
@@ -20,6 +22,8 @@ class TaskTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var appConfigProvider = Provider.of<AppConfiguresProvider>(context);
+
     return TextFormField(
       style: Theme.of(context).textTheme.titleMedium,
       initialValue: initialValue,
@@ -29,7 +33,10 @@ class TaskTextFormField extends StatelessWidget {
       maxLines: maxLines,
       decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: TextStyle(color: MyTheme.greyLightColor),
+          hintStyle: TextStyle(
+              color: (appConfigProvider.currentMode == ThemeMode.light)
+                  ? MyTheme.greyLightColor
+                  : MyTheme.greyDarkColor),
           contentPadding: const EdgeInsets.only(top: 10),
           enabledBorder: const UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.black),
