@@ -1,4 +1,4 @@
-# ToDO
+# ToDo
 
 "ToDo" designed to streamline task management and enhance productivity. With this app,
  you can effortlessly organize your tasks and stay on top of your to-do list
