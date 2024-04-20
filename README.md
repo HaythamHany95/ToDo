@@ -2,6 +2,35 @@
 
 "ToDo" designed to streamline task management and enhance productivity. With this app,
  you can effortlessly organize your tasks and stay on top of your to-do list
+
+
+Features:
+
+- Add, Update, Delete, and Mark Tasks: Easily manage your tasks with intuitive options.
+
+- Date Specification: Set deadlines for your tasks to prioritize effectively.
+
+🛠️ Implementation:
+
+- SharedPreferences: Efficiently store user preferences for a personalized experience.
+
+- Provider: Manage state effortlessly and ensure smooth data flow within the app.
+
+- Firebase Database: Utilize Firebase for secure and reliable task storage.
+
+- Authentication: Seamlessly sign in and sign up with Firebase authentication.
+
+- Dart & Flutter Widgets: Leverage the power of Dart and Flutter for a robust and responsive user interface.
+
+- Splash Screen: Enhance user experience with a professional splash screen.
+
+⚙️ Customization:
+
+- Language Settings: Choose between Arabic and English for a tailored interface.
+
+- Mood Settings: Switch between light and dark modes for a comfortable viewing experience.
+
+
 ![Screenshot_1713605571](https://github.com/HaythamHany95/ToDo/assets/127749266/f096c4a3-b9ae-4795-ba59-d9fdc0c3f089)
 ![Screenshot_1713605576](https://github.com/HaythamHany95/ToDo/assets/127749266/9457595f-27ac-4d1e-8f20-79fd93e7bbb7)
 ![Screenshot_1713605639](https://github.com/HaythamHany95/ToDo/assets/127749266/4cd7e80f-c0ba-4d2d-a371-1b8cd6d61739)
