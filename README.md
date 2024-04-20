@@ -14,7 +14,7 @@ Features:
 
 - SharedPreferences: Efficiently store user preferences for a personalized experience.
 
-- Provider: Manage state effortlessly and ensure smooth data flow within the app.
+- MVVM Arch design pattern with Provider to manage state effortlessly and ensure smooth data flow within the app.
 
 - Firebase Database: Utilize Firebase for secure and reliable task storage.
 
